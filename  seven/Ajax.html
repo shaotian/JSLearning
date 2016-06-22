@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+    <script type="text/javascript">
+        function addLoadEvent(func) {
+            var old = window.onload;
+            if (typeof old != "function") {
+                window.onload = func;
+            } else {
+                window.onload = function () {
+                    old();
+                    func();
+                }
+            }
+        }
+        function getNewContent() {
+            var request = new XMLHttpRequest();
+            if (!request) {
+                alert("This blouser isn't suppurt xmlHttp");
+                return;
+            }
+            request.open("GET", "example.txt", true);
+            request.onreadystatechange = function () {
+                if (request.readyState != 4) {
+//                    alert("loaded failed");
+                    return;
+                }
+                var para = document.createElement("p");
+                var text = document.createTextNode(request.responseText);
+                para.appendChild(text);
+                document.getElementById("new").appendChild(para);
+                alert("loaded done!")
+            };
+            request.send(null);
+        }
+        addLoadEvent(getNewContent);
+    </script>
+</head>
+<body>
+<div id="new"></div>
+
+</body>
+</html>

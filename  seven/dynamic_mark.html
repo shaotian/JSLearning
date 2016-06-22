@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Test</title>
+	<script type="text/javascript">
+		window.onload = function() {
+			var p = document.createElement("p");
+			alert("nodeName: " + p.nodeName + " nodeType: " + p.nodeType);
+			var testdiv = document.getElementById("testdiv");
+			testdiv.appendChild(p);
+			var txt = document.createTextNode("This is create paragraph");
+			p.appendChild(txt);
+		}
+	</script>
+</head>
+<body>
+<div id="testdiv">
+	<p>This is <em>my</em> content.</p>
+</div>
+</body>
+</html>

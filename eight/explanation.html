@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Explaining the Document Object Model</title>
+    <style type="text/css">
+        body {
+            font-family: "Helvetica","Arial", sans-serif;
+            font-size: 14pt;
+        }
+        abbr {
+            text-decoration: none;
+            border: 0;
+            font-style: normal;
+        }
+    </style>
+    <script type="text/javascript">
+        function addLoadEvent(func) {
+            var old = window.onload;
+            if ((typeof old) != "function") {
+                window.onload = func;
+            } else {
+                window.onload = function() {
+                    old();
+                    func();
+                }
+            }
+        }
+
+        function displayAbbreviations() {
+            var abbrs = document.getElementsByTagName("abbr");
+            if (abbrs.length < 1) {
+                return;
+            }
+            var h2 = document.createElement("h2");
+            h2.appendChild(document.createTextNode("Abbreviations"));
+            document.body.appendChild(h2);
+            var dl = document.createElement("dl");
+            document.body.appendChild(dl);
+            for (var i = 0; i < abbrs.length; i++) {
+                var def = abbrs[i];
+                var dt = document.createElement("dt");
+                var dd = document.createElement("dd");
+                dt.appendChild(document.createTextNode(def.firstChild.nodeValue));
+                dd.appendChild(document.createTextNode(def.title));
+                dl.appendChild(dt);
+                dl.appendChild(dd);
+            }
+        }
+
+        function displayCitations() {
+            var bqs = document.getElementsByTagName("blockquote");
+            for (var i = 0; i < bqs.length; i++) {
+                var bq = bqs[i];
+                if (!bq.cite) {
+                    continue;
+                }
+                var a = document.createElement("a");
+                a.href = bq.cite;
+                a.appendChild(document.createTextNode("source"));
+                var sup = document.createElement("sup");
+                sup.appendChild(a);
+                bq.firstChild.appendChild(sup);
+            }
+        }
+
+        addLoadEvent(displayAbbreviations);
+        addLoadEvent(displayCitations);
+    </script>
+</head>
+<body>
+<h1>What is the Document Object Model</h1>
+The <abbr title="World Wide Web Consortium">W3C</abbr> defines the <abbr title="Document Object Model">DOM</abbr> as:
+<blockquote cite="http://www.3c.org/DOM/"><p>A platform and language-neutral interface the will allow programs and update the content, structure and style of documents.</p></blockquote>
+<p>
+    It is an <abbr title="Application Programming Interface">API</abbr>
+    that can be used to navigate <abbr title="HyperText Markup Language">HTML</abbr> and <abbr
+        title="eXtensible Markup Language">XML</abbr>
+</p>
+</body>
+</html>
