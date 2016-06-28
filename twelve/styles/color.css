@@ -70,3 +70,18 @@ header nav a.here:link, header nav a.here:visited, header nav a.here:hover, head
     color: #eef;
     background-color: #799;
 }
+
+th {
+    color: #edc;
+    background-color: #455;
+}
+
+tr:nth-child(odd) {
+    color: #223;
+    background-color: #ec8;
+}
+
+tr:nth-child(even) {
+    color: #223;
+    background-color: #eb6;
+}

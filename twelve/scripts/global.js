@@ -40,12 +40,12 @@ function highlightPage() {
 
     for (var i = 0; i < links.length; i++) {
         var l = links[i].href;
-        if (window.location.href.indexOf(l)!= -1) {
+        if (window.location.href.indexOf(l) != -1) {
             addClass(links[i], "here");
             document.body.id = links[i].lastChild.nodeValue.toLowerCase();
         }
     }
-    
+
 }
 function moveElement(elementId, finalX, finalY, interval) {
     var elem = document.getElementById(elementId);
@@ -63,7 +63,7 @@ function moveElement(elementId, finalX, finalY, interval) {
     }
 
     elem.style.left = calc(xpos, finalX) + "px";
-    elem.style.top = calc(ypos, finalY)+ "px";
+    elem.style.top = calc(ypos, finalY) + "px";
     elem.movement = setTimeout("moveElement('" + elementId + "'," + finalX + "," + finalY + "," + interval + ")", interval);
 }
 
@@ -98,7 +98,7 @@ function prepareSlideShow() {
     for (var i = 0; i < links.length; i++) {
         var link = links[i];
         link.onmouseover = overFun;
-        link.lindex = i+1;
+        link.lindex = i + 1;
     }
 }
 function prepareInternalNav() {
@@ -136,6 +136,110 @@ function prepareInternalNav() {
     sections[0].parentNode.insertBefore(ul, sections[0]);
 }
 
+function preparePlaceholder() {
+    var gallery = document.getElementById("imagegallery");
+    if (!gallery) {
+        return;
+    }
+    var placeholder = document.createElement("img");
+    placeholder.id = "placeholder";
+    placeholder.src = "images/placeholder.gif";
+    var description = document.createElement("p");
+    description.id = "description";
+    description.appendChild(document.createTextNode("Choose an image"));
+
+    insertAfter(description, gallery);
+    insertAfter(placeholder, description);
+}
+
+function prepareGallery() {
+    var gallery = document.getElementById("imagegallery");
+    if (!gallery) {
+        return;
+    }
+    var links = gallery.getElementsByTagName("a");
+    var click = function () {
+        showPic(this);
+        return false;
+    };
+    for (var i = 0; i < links.length; i++) {
+        var link = links[i];
+        link.onclick = click;
+    }
+}
+
+function showPic(whichpic) {
+    var placeholder = document.getElementById("placeholder");
+    placeholder.src = whichpic.href;
+    var description = document.getElementById("description");
+    description.lastChild.nodeValue = whichpic.title;
+}
+
+function getHttpObject() {
+    return new XMLHttpRequest();
+}
+
+function displayAjaxLoading(element) {
+    while (element.hasChildNodes()) {
+        element.removeChild(element.lastChild);
+    }
+    var content = document.createElement("img");
+    content.src = "images/loading.gif";
+    element.appendChild(content);
+}
+
+function submitFormWithAjax(whichform, thetarget) {
+    var request = getHttpObject();
+    if (!request) {
+        return false;
+    }
+    displayAjaxLoading(thetarget);
+    var dataParts = [];
+    var element;
+    for (var i = 0; i < whichform.elements.length; i++) {
+        element = whichform.elements[i];
+        dataParts[i] = element.name + '=' + encodeURIComponent(element.value);
+    }
+    var data = dataParts.join('&');
+    request.open('POST', whichform.action, true);
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.onreadystatechange = function () {
+        if (request.readyState != 4) {
+            return;
+        }
+        if (request.status != 200 && request.status != 0) {
+            thetarget.innerHTML = '<p>' + request.statusText + '</p>';
+            return;
+        }
+        for (var i = 0; i < 1000000000; i++) {
+        }
+        var matches = request.responseText.match(/<article>([\s\S]+)<\/article>/)
+        if (matches.length > 0) {
+            thetarget.innerHTML = matches[1];
+        } else {
+            thetarget.innerHTML = '<p>Oops, there was an error. Sorry.</p>>';
+        }
+    };
+    request.send(data);
+    return true;
+}
+
+function prepareForms() {
+    if (document.forms.length < 1) {
+        return;
+    }
+    for (var i = 0; i < document.forms.length; i++) {
+        var thisForm = document.forms[i];
+        thisForm.onsubmit = function () {
+            var article = document.getElementsByTagName('article')[0];
+            return !submitFormWithAjax(this, article);
+        }
+    }
+}
+
 addLoadEvent(highlightPage);
 addLoadEvent(prepareSlideShow);
 addLoadEvent(prepareInternalNav);
+addLoadEvent(preparePlaceholder);
+addLoadEvent(prepareGallery);
+addLoadEvent(prepareForms);
